@@ -1,4 +1,4 @@
-name: Tauri Release
+name: Release
 
 on:
   push:
@@ -35,10 +35,10 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.0-dev libgtk-3-dev
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
-      - name: Build Tauri app
-        run: npm run tauri build
+      - name: Build app
+        run: pnpm tauri build
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
