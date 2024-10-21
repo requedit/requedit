@@ -1,6 +1,9 @@
 # Requedit
+A simple http request proxy editor.
 
-* config
-* request and response merge
-* request and response edit
-* error
+## Todo
+
+- [x] global config
+- [ ] request and response merge
+- [ ] request and response edit
+- [ ] error
