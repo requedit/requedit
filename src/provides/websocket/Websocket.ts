@@ -29,7 +29,8 @@ export const useWebsocket = () => {
 }
 export const useMessage = (filters: FiltersValue) => {
   const { messages } = useContext(WebsocketContext);
-  return messages.filter(m => m.url.includes(filters.search) && (filters.category == 'All' || m.category == filters.category))
+  return messages
+  // return messages.filter(m => m.url.includes(filters.search) && (filters.category == 'All' || m.category == filters.category))
 }
 
 

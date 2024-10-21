@@ -4,7 +4,7 @@
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist",
-    "devUrl": "http://localhost:1420/index"
+    "devUrl": "http://localhost:1420"
   },
   "plugins": {
     "localhost": {
@@ -22,8 +22,8 @@
       "icons/icon.ico"
     ]
   },
-  "productName": "requedit",
-  "mainBinaryName": "requedit",
+  "productName": "Requedit",
+  "mainBinaryName": "Requedit",
   "version": "0.1.0",
   "identifier": "com.requedit.app",
   "app": {

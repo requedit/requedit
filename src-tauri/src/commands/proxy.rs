@@ -1,15 +1,16 @@
 use std::process::Command;
-
+use crate::config;
 use tauri;
 
 #[tauri::command]
 pub(crate) fn start_proxy() {
-    let ip = "127.0.0.1";
-    let port = "8001";
+    let config = config::load().unwrap();
+    let address = &config.address;
+    let port = &config.port.to_string();
     let http_proxy_status = Command::new("networksetup")
         .arg("-setwebproxy")
         .arg("Wi-Fi") // 网络接口，例如 "Wi-Fi" 或 "Ethernet"
-        .arg(ip) // 代理服务器地址
+        .arg(address) // 代理服务器地址
         .arg(port) // 代理服务器端口
         .status()
         .expect("failed to execute process");
@@ -25,7 +26,7 @@ pub(crate) fn start_proxy() {
     let https_proxy_status = Command::new("networksetup")
         .arg("-setsecurewebproxy")
         .arg("Wi-Fi")
-        .arg(ip) // 代理服务器地址
+        .arg(address) // 代理服务器地址
         .arg(port) // 代理服务器端口
         .status()
         .expect("failed to execute process");

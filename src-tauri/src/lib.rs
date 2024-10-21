@@ -2,6 +2,7 @@ mod commands;
 mod menus;
 mod mitm;
 mod utils;
+mod config;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

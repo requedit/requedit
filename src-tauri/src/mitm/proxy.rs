@@ -1,4 +1,4 @@
-use crate::mitm::proxy_handler::ProxyHandler;
+use crate::{config, mitm::proxy_handler::ProxyHandler};
 use crate::utils;
 use hudsucker::builder::ProxyBuilder;
 use std::{fmt, future::Future, net::SocketAddr};
@@ -21,9 +21,9 @@ impl Proxy {
         // 读取自签名证书
 
         let addr = self.addr;
-        utils::generate_key_and_cer("./requedit.key", "./requedit.cer");
-        let ca = utils::get_ca("./requedit.key", "./requedit.cer").unwrap();
-        // let ca = load_ca("src/cert/ca.crt", "src/cert/ca.key").unwrap();
+        let c = config::get_global_config();
+        utils::generate_key_and_cer(&c.key_name, &c.cer_name);
+        let ca = utils::get_ca(&c.key_name, &c.cer_name).unwrap();
 
         // 使用 ProxyBuilder 创建代理服务器
         let proxy = ProxyBuilder::new()
