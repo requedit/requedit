@@ -1,4 +1,4 @@
-import { useClearFn } from "@/provides/websocket/Websocket";
+import { useClearFn } from "@/provides/AppContext";
 import {
   PauseOutlined,
   CaretRightOutlined,

@@ -39,6 +39,7 @@ tauri-plugin-shell = "2"
 serde_yaml = "0.8.24"
 shellexpand = "2.1.0"
 once_cell = "1.17"
+tauri-plugin-theme = "2.1.2"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

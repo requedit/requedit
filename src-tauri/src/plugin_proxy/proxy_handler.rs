@@ -10,7 +10,7 @@ use tauri::async_runtime::Sender;
 
 #[derive(Clone, Debug)]
 pub(crate) struct ProxyHandler {
-    tx: Sender<ProxyHandler>,
+    tx: Sender<ProxyHandler>, // TODO: 
     req: Option<ProxiedRequest>,
     res: Option<ProxiedResponse>,
 }
@@ -57,9 +57,6 @@ impl HttpHandler for ProxyHandler {
         _ctx: &HttpContext,
         req: Request<Body>,
     ) -> RequestOrResponse {
-        // if req.method() == Method::CONNECT {
-        //     return RequestOrResponse::Request(req);
-        // }
         let (parts, body) = req.into_parts();
         let bytes = to_bytes(body).await.unwrap();
 

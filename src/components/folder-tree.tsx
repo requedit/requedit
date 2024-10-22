@@ -1,4 +1,4 @@
-import { useTreeData } from "@/provides/websocket/Websocket";
+import { useTreeData } from "@/provides/AppContext";
 import { Tree } from "antd";
 
 export default function FolderTree() {

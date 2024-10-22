@@ -4,13 +4,13 @@ import FolderTree from "@/components/folder-tree";
 import Toolbar from "@/components/toolbar";
 import UrlList from "@/components/url-list";
 import useHeight from "@/hooks/useHeight";
-import { useMessage } from "@/provides/websocket/Websocket";
+import { useRequests } from "@/provides/AppContext";
 import { Divider } from "antd";
 import SplitPane from "react-split-pane";
 
 export default function ListPage() {
   const { filters, handleFiltersChange } = useFilters();
-  const messages = useMessage(filters);
+  const requests = useRequests(filters);
   const { height, ref } = useHeight();
   return (
     <div className="h-full">
@@ -37,7 +37,7 @@ export default function ListPage() {
           }}
         >
           <FolderTree />
-          <UrlList dataSource={messages} />
+          <UrlList dataSource={requests} />
         </SplitPane>
       </div>
     </div>

@@ -6,12 +6,16 @@ import List from "@/pages/list";
 import ErrorPage from "@/pages/error-page";
 import Settings from "@/pages/settings";
 import "./index.css";
-
+import { AppProvider } from "./provides/AppProvider";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    Component: App,
+    element: (
+      <AppProvider>
+        <App></App>
+      </AppProvider>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
@@ -23,7 +27,6 @@ const router = createBrowserRouter([
         Component: Settings,
       },
     ],
-
   },
 ]);
 

@@ -1,8 +1,6 @@
 // https://github.com/sinKettu/cruster/blob/master/src/utils.rs
 
-use std::fs;
-use std::io::Error;
-
+use std::{fs, io::Read, path::Path};
 use hudsucker::certificate_authority::RcgenAuthority;
 use hudsucker::rustls::{Certificate, PrivateKey};
 use rcgen::{
@@ -13,8 +11,10 @@ use rcgen::{
 use time::macros::datetime;
 use time::OffsetDateTime;
 
+use crate::error::RequeditError;
+
 pub(crate) fn generate_key_and_cer(key_path: &str, cer_path: &str) {
-    if std::path::Path::new(key_path).exists() && std::path::Path::new(cer_path).exists() {
+    if Path::new(key_path).exists() && Path::new(cer_path).exists() {
         return;
     }
 
@@ -31,19 +31,17 @@ pub(crate) fn generate_key_and_cer(key_path: &str, cer_path: &str) {
     fs::write(key_path, new_cert.serialize_private_key_pem()).unwrap();
 }
 
-pub(crate) fn get_ca(key_path: &str, cer_path: &str) -> Result<RcgenAuthority, Error> {
-    use std::io::Read;
-
+pub(crate) fn get_ca(key_path: &str, cer_path: &str) -> Result<RcgenAuthority, RequeditError> {
     let mut key_buffer: Vec<u8> = Vec::new();
     let f = fs::File::open(key_path);
     match f {
         Ok(mut file) => {
             let res = file.read_to_end(&mut key_buffer);
             if let Err(e) = res {
-                return Err(e);
+                return Err(RequeditError::from(e));
             }
         }
-        Err(e) => return Err(e),
+        Err(e) => return Err(RequeditError::from(e)),
     }
 
     let mut cer_buffer: Vec<u8> = Vec::new();
@@ -52,22 +50,22 @@ pub(crate) fn get_ca(key_path: &str, cer_path: &str) -> Result<RcgenAuthority, E
         Ok(mut file) => {
             let res = file.read_to_end(&mut cer_buffer);
             if let Err(e) = res {
-                return Err(e);
+                return Err(RequeditError::from(e));
             }
         }
-        Err(e) => return Err(e),
+        Err(e) => return Err(RequeditError::from(e)),
     }
 
     return {
         let mut key_buffer_ref = key_buffer.as_slice();
         let mut cert_buffer_ref = cer_buffer.as_slice();
 
-        let mut private_key_raw = rustls_pemfile::pkcs8_private_keys(&mut key_buffer_ref).unwrap();
-        let mut ca_cert_raw = rustls_pemfile::certs(&mut cert_buffer_ref).unwrap();
+        let mut private_key_raw = rustls_pemfile::pkcs8_private_keys(&mut key_buffer_ref)?;
+        let mut ca_cert_raw = rustls_pemfile::certs(&mut cert_buffer_ref)?;
 
         let private_key = PrivateKey(private_key_raw.remove(0));
         let ca_cert = Certificate(ca_cert_raw.remove(0));
 
-        Ok(RcgenAuthority::new(private_key, ca_cert, 1000).unwrap())
+        Ok(RcgenAuthority::new(private_key, ca_cert, 1000)?)
     };
 }

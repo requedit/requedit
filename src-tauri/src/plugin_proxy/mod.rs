@@ -1,35 +1,38 @@
-use crate::config::{self, Config};
+use crate::{
+    commands,
+    config,
+    plugin_proxy::proxy_server::ProxyServer
+};
 use std::net::{IpAddr, SocketAddr};
 use tauri::{
     async_runtime,
     plugin::{Builder, TauriPlugin},
     Emitter, Runtime,
 };
-pub(crate) mod proxy;
+
+pub(crate) mod proxy_server;
 pub(crate) mod proxy_handler;
 
 pub(crate) fn init<R: Runtime>() -> TauriPlugin<R> {
-    // 创建广播频道
-    let (tx, mut rx) = async_runtime::channel::<proxy_handler::ProxyHandler>(100);
     Builder::new("proxy")
-        .setup(move |app_handle, api| {
+        .invoke_handler(tauri::generate_handler![
+            commands::proxy::start_proxy,
+            commands::proxy::stop_proxy,
+        ])
+        .setup(move |app_handle, _api| {
             let app_handle = app_handle.clone();
-            // 异步任务，接收来自代理的请求并通过 Tauri 的事件系统发送给前端
+            let (tx, mut rx) = async_runtime::channel::<proxy_handler::ProxyHandler>(100);
             async_runtime::spawn(async move {
                 while let Some(message) = rx.recv().await {
-                    println!("Received message: {:?}", message);
                     app_handle.emit("proxy-event", message.to_parts()).unwrap();
                 }
             });
             async_runtime::spawn(async move {
                 let c = config::get_global_config();
-                let addr =
-                    SocketAddr::from((c.address.parse::<IpAddr>().unwrap(), c.port));
-                if let Err(e) = proxy::Proxy::new(addr, tx).start(shutdown_signal()).await {
+                let addr = SocketAddr::from((c.address.parse::<IpAddr>().unwrap(), c.port));
+                if let Err(e) = ProxyServer::new(addr, tx).start(shutdown_signal()).await {
                     eprintln!("Error running proxy on {:?}: {e}", addr);
                 }
-
-                println!("Tauri app setup complete.");
             });
             Ok(())
         })
