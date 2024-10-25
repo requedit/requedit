@@ -5,14 +5,18 @@ use hudsucker::{
     HttpContext, HttpHandler, RequestOrResponse,
 };
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 use std::collections::HashMap;
 use tauri::async_runtime::Sender;
 
+
+
 #[derive(Clone, Debug)]
 pub(crate) struct ProxyHandler {
-    tx: Sender<ProxyHandler>, // TODO: 
+    tx: Sender<ProxyHandler>, // TODO:
     req: Option<ProxiedRequest>,
     res: Option<ProxiedResponse>,
+    id: Uuid,
 }
 
 impl ProxyHandler {
@@ -21,11 +25,12 @@ impl ProxyHandler {
             tx,
             req: None,
             res: None,
+            id: Uuid::new_v4(),
         }
     }
 
-    pub(crate) fn to_parts(self) -> (Option<ProxiedRequest>, Option<ProxiedResponse>) {
-        (self.req, self.res)
+    pub(crate) fn to_parts(self) -> (String, Option<ProxiedRequest>, Option<ProxiedResponse>) {
+        (self.id.to_string(), self.req, self.res)
     }
 
     pub(crate) fn set_req(&mut self, req: ProxiedRequest) -> Self {
@@ -33,6 +38,7 @@ impl ProxyHandler {
             tx: self.clone().tx,
             req: Some(req),
             res: None,
+            id: Uuid::new_v4(),
         }
     }
 
@@ -41,6 +47,7 @@ impl ProxyHandler {
             tx: self.clone().tx,
             req: self.clone().req,
             res: Some(res),
+            id: self.clone().id,
         }
     }
 
@@ -52,11 +59,10 @@ impl ProxyHandler {
 }
 #[async_trait]
 impl HttpHandler for ProxyHandler {
-    async fn handle_request(
-        &mut self,
-        _ctx: &HttpContext,
-        req: Request<Body>,
-    ) -> RequestOrResponse {
+    async fn handle_request(&mut self, _ctx: &HttpContext, req: Request<Body>) -> RequestOrResponse {
+        if req.method() == Method::CONNECT {
+            return RequestOrResponse::Request(req);
+        }
         let (parts, body) = req.into_parts();
         let bytes = to_bytes(body).await.unwrap();
 
@@ -70,7 +76,9 @@ impl HttpHandler for ProxyHandler {
                 .timestamp_nanos_opt()
                 .unwrap_or_default(),
         );
-        self.set_req(output_request).send_output().await;
+        *self = self.set_req(output_request);
+        println!("Request: {:?}", self.id);
+
 
         RequestOrResponse::Request(Request::from_parts(parts, Body::from(bytes.clone())))
     }
@@ -87,7 +95,7 @@ impl HttpHandler for ProxyHandler {
                 .timestamp_nanos_opt()
                 .unwrap_or_default(),
         );
-
+        println!("Response: {:?}", self.id);
         self.set_res(output_response).send_output().await;
         // 创建新的 Body
         let new_body = Body::from(bytes.clone());

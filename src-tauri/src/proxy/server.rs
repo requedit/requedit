@@ -1,5 +1,5 @@
 use crate::error::RequeditError;
-use crate::{config, plugin_proxy::proxy_handler::ProxyHandler};
+use crate::{config, proxy::handler::ProxyHandler};
 use crate::utils;
 use hudsucker::builder::ProxyBuilder;
 use std::{future::Future, net::SocketAddr};
@@ -15,9 +15,8 @@ impl ProxyServer {
         Self { addr, tx }
     }
 
-    pub(crate) async fn start<F: Future<Output = ()> + Send + 'static>(
-        self,
-        signal: F,
+    pub(crate) async fn start(
+        self
     ) -> Result<(), RequeditError> {
 
         let addr = self.addr;
@@ -33,10 +32,15 @@ impl ProxyServer {
             .with_http_handler(ProxyHandler::new(self.tx.clone()))
             .build();
 
-        if let Err(e) = proxy.start(signal).await {
+        if let Err(e) = proxy.start(shutdown_signal()).await {
             println!("Failed to start the proxy server: {}", e);
         }
         Ok(())
     }
 }
 
+async fn shutdown_signal() {
+    tokio::signal::ctrl_c()
+        .await
+        .expect("Failed to install CTRL+C signal handler");
+}

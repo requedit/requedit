@@ -38,6 +38,7 @@ export const AppContext = createContext<AppContextType>({
 
 export const useRequests = (filters: FiltersValue) => {
   const { requests } = useContext(AppContext);
+  console.log('useRequests', requests)
   return requests
   // return messages.filter(m => m.url.includes(filters.search) && (filters.category == 'All' || m.category == filters.category))
 }

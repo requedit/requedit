@@ -2,6 +2,8 @@ import { Outlet } from "react-router-dom";
 import { AppProvider } from "@/provides/AppProvider";
 import { ConfigProvider, theme } from "antd";
 import { useTheme } from "./provides/AppContext";
+import { MantineProvider } from "@mantine/core";
+import { ContextMenuProvider } from 'mantine-contextmenu';
 
 const { darkAlgorithm, defaultAlgorithm } = theme;
 
@@ -13,23 +15,22 @@ function App() {
       componentSize="small"
       theme={{
         algorithm: theme === "dark" ? darkAlgorithm : defaultAlgorithm,
-        components: {
-          Input: {
-            paddingBlockLG: 2,
-            inputFontSizeSM: 12,
-          },
-          Tag: {
-            fontSize: 12,
-            lineHeightSM: 1.2,
-            marginXS: 2,
-          },
-          Divider: {
-            marginLG: 10,
-          },
+        token: {
+          fontSize: 14,
+          marginLG: 8,
+          margin: 4,
         },
+        components: {
+          Table: {
+          }
+        }
       }}
     >
-      <Outlet />
+      <MantineProvider>
+        <ContextMenuProvider>
+          <Outlet />
+        </ContextMenuProvider>
+      </MantineProvider>
     </ConfigProvider>
   );
 }

@@ -27,10 +27,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       await listen<any>("proxy-event", (event) => {
         console.log("Received event from Rust:", event.payload);
         setRequests((preRequests) =>
-          [...preRequests, event.payload].map((item, index) => ({
-            ...item,
-            key: index,
-          }))
+          [...event.payload, ...preRequests]
+            .filter((item) => item)
+            .map((item, index) => ({
+              ...item,
+              key: index,
+            }))
         );
         const newTree = updateTreeData(event.payload, treeData);
         setTreeData(newTree);
@@ -44,6 +46,12 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       theme: _theme,
     });
     setTheme(_theme);
+    const doc = document.documentElement;
+    if (_theme === "dark") {
+      doc.classList.add("dark");
+    } else {
+      doc.classList.remove("dark");
+    }
   };
   return (
     <AppContext.Provider
@@ -56,7 +64,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         toggleTheme,
       }}
     >
-      {children}
+      <div className="bg-white text-gray-900 dark:bg-[#141414] dark:text-white">
+        {children}
+      </div>
     </AppContext.Provider>
   );
 };

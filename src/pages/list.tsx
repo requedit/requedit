@@ -20,17 +20,14 @@ export default function ListPage() {
         <Filters value={filters} onChange={handleFiltersChange} />
       </div>
 
-      <div className="border-t border-solid border-gray-200 h-max">
+      <div className="border-t border-solid border-gray-200 dark:border-gray-600 h-max">
         {/* @ts-ignore */}
         <SplitPane
           split="vertical"
           minSize={100}
+          maxSize={400}
           defaultSize={280}
-          resizerStyle={{
-            background: "#ccc",
-            width: "1px",
-            cursor: "col-resize",
-          }}
+          resizerClassName="w-[11px] mx-0 -mx-[5px] border-l-[5px] border-r-[5px] border-l-transparent border-r-transparent cursor-col-resize bg-gray-200 dark:bg-gray-600 z-1 box-border bg-clip-padding"
           style={{
             position: "relative",
             height: `calc(100vh - ${height + 1}px)`,

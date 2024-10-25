@@ -3,7 +3,7 @@ use crate::config;
 use tauri;
 
 #[tauri::command]
-pub(crate) fn start_proxy() {
+pub(crate) fn set_sys_proxy() {
     let config = config::load().unwrap();
     let address = &config.address;
     let port = &config.port.to_string();
@@ -40,7 +40,7 @@ pub(crate) fn start_proxy() {
 }
 
 #[tauri::command]
-pub(crate) fn stop_proxy() {
+pub(crate) fn clean_sys_proxy() {
     // 关闭 HTTP 代理
     let http_proxy_status = Command::new("networksetup")
         .arg("-setwebproxystate")
