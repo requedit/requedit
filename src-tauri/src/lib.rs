@@ -1,8 +1,9 @@
 use std::net::IpAddr;
 use std::net::SocketAddr;
+use proxy::data::ProxyData;
 use tauri::async_runtime;
 use tauri::Emitter;
-use proxy::{handler, server};
+use proxy::{store, server};
 
 mod commands;
 mod config;
@@ -21,10 +22,12 @@ pub fn run() {
         .setup(|app| {
             let app_handle = app.handle();
             let app_handle = app_handle.clone();
-            let (tx, mut rx) = async_runtime::channel::<handler::ProxyHandler>(100);
+            let (tx, mut rx) = async_runtime::channel::<ProxyData>(100);
             async_runtime::spawn(async move {
-                while let Some(message) = rx.recv().await {
-                    app_handle.emit("proxy-event", message.to_parts()).unwrap();
+                let mut store = store::ProxyDataStore::new();
+                while let Some(proxy_data) = rx.recv().await {
+                    let data = store.insert_or_update(proxy_data).unwrap();
+                    app_handle.emit("proxy-event", data).unwrap();
                 }
             });
             async_runtime::spawn(async move {
