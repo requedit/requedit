@@ -19,10 +19,14 @@ function App() {
           fontSize: 14,
           marginLG: 8,
           margin: 4,
+          borderRadiusSM: 50,
+          lineHeight: 1.2,
+          lineHeightSM: 1.4
         },
         components: {
           Table: {
-          }
+          },
+
         }
       }}
     >

@@ -1,5 +1,6 @@
 import { Table } from "antd";
 import { useContextMenu } from 'mantine-contextmenu';
+import { ColumnType } from "antd/es/table";
 
 type DataType = {
   key: number;
@@ -9,10 +10,10 @@ type DataType = {
   status: string;
 };
 
-export default function UrlList(props: { dataSource: DataType[] }) {
+export default function UrlList(props: { dataSource: DataType[], onSelect: (data: DataType) => void }) {
   console.log(props.dataSource);
   const { showContextMenu } = useContextMenu();
-  const columns = [
+  const columns: ColumnType<any>[] = [
     {
       title: "ID",
       dataIndex: "id",
@@ -24,31 +25,35 @@ export default function UrlList(props: { dataSource: DataType[] }) {
       dataIndex: "uri",
       key: "uri",
       ellipsis: true,
+      render: (text, record, index) => {
+        return <span >{record.req.uri}</span>;
+      }
     },
-    {
-      title: "客户端",
-      dataIndex: "client",
-      key: "client",
-      ellipsis: true,
-    },
+    // {
+    //   title: "客户端",
+    //   dataIndex: "client",
+    //   key: "client",
+    //   ellipsis: true,
+    // },
     {
       title: "Method",
       dataIndex: "method",
       key: "method",
       ellipsis: true,
+      render: (text, record, index) => {
+        return <span >{record.req.method}</span>;
+      }
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       ellipsis: true,
+      render: (text, record, index) => {
+        return <span >{record.res ? record.res.status : <span className="text-gray-400">pending</span>}</span>;
+      }
     },
-    {
-      title: "StatusCode",
-      dataIndex: "statusCode",
-      key: "statusCode",
-      ellipsis: true,
-    },
+
     {
       title: 'Time',
       dataIndex: 'time',
@@ -62,14 +67,15 @@ export default function UrlList(props: { dataSource: DataType[] }) {
       ellipsis: true,
     }
   ];
+
   return (
-    <div>
+    <div className="overflow-y-auto">
       <Table<DataType>
       rowKey={(record) => record.key}
       columns={columns}
       pagination={false}
       dataSource={props.dataSource}
-      scroll={{x: 'max-content'}}
+      // scroll={{y: '300px'}}
       onRow={(record) => {
         return {
           onContextMenu: showContextMenu([
@@ -86,6 +92,7 @@ export default function UrlList(props: { dataSource: DataType[] }) {
               onClick: () => console.log,
             },
           ]),
+          onClick: () => props.onSelect(record),
         };
       }}
     />

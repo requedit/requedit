@@ -1,8 +1,8 @@
 import Filters from "@/components/filters/index";
 import useFilters from "@/components/filters/useFilters";
 import FolderTree from "@/components/folder-tree";
+import MainPanel from "@/components/main-panel";
 import Toolbar from "@/components/toolbar";
-import UrlList from "@/components/url-list";
 import useHeight from "@/hooks/useHeight";
 import { useRequests } from "@/provides/AppContext";
 import { Divider } from "antd";
@@ -34,7 +34,7 @@ export default function ListPage() {
           }}
         >
           <FolderTree />
-          <UrlList dataSource={requests} />
+          <MainPanel dataSource={requests} />
         </SplitPane>
       </div>
     </div>

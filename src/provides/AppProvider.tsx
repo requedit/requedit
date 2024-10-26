@@ -26,14 +26,15 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     (async function () {
       await listen<any>("proxy-event", (event) => {
         console.log("Received event from Rust:", event.payload);
-        setRequests((preRequests) =>
-          [...event.payload, ...preRequests]
+        setRequests((preRequests) => {
+          const reqs = [event.payload, ...preRequests]
             .filter((item) => item)
             .map((item, index) => ({
               ...item,
               key: index,
             }))
-        );
+            return _.unionBy(reqs, 'id');
+        });
         const newTree = updateTreeData(event.payload, treeData);
         setTreeData(newTree);
       });
