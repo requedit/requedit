@@ -1,7 +1,7 @@
 use crate::utils;
 use crate::{config, error::RequeditError, proxy::data::ProxyData, proxy::handler::ProxyHandler};
 use hudsucker::builder::ProxyBuilder;
-use std::{future::Future, net::SocketAddr};
+use std::net::SocketAddr;
 use tauri::async_runtime::Sender;
 
 pub(crate) struct ProxyServer {

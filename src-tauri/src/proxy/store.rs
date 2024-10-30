@@ -40,10 +40,10 @@ impl ProxyDataStore {
         }
     }
 
-    fn get(&self, key: &str) -> Option<&ProxyData> {
-        self.store.get(key)
-    }
-    fn delete( &mut self, key: &str) -> Option<ProxyData> {
-        self.store.remove(key)
-    }
+    // fn get(&self, key: &str) -> Option<&ProxyData> {
+    //     self.store.get(key)
+    // }
+    // fn delete( &mut self, key: &str) -> Option<ProxyData> {
+    //     self.store.remove(key)
+    // }
 }

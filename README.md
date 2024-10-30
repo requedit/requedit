@@ -1,2 +1,2 @@
 # Requedit
-A simple http request proxy editor.
+A simple http request proxy.

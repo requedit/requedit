@@ -55,7 +55,7 @@ impl HttpHandler for ProxyHandler {
                 self.tx.send(data).await.unwrap();
                 res
             },
-            Err(err) => Response::default(),
+            Err(_) => Response::default(),
         };
 
     }
