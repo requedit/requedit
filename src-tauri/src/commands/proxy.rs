@@ -1,5 +1,5 @@
-use std::process::Command;
 use crate::config;
+use std::process::Command;
 use tauri;
 
 #[tauri::command]
@@ -71,3 +71,28 @@ pub(crate) fn clean_sys_proxy() {
         eprintln!("关闭 HTTPS 代理失败");
     }
 }
+
+#[tauri::command]
+    pub(crate) fn get_proxy_status() -> (bool, bool) {
+        // 检查 HTTP 代理状态
+        let http_proxy_output = Command::new("networksetup")
+            .arg("-getwebproxy")
+            .arg("Wi-Fi") // 网络接口，例如 "Wi-Fi" 或 "Ethernet"
+            .output()
+            .expect("failed to execute process");
+
+        let http_proxy_status = String::from_utf8_lossy(&http_proxy_output.stdout);
+        let http_enabled = http_proxy_status.contains("Enabled: Yes");
+
+        // 检查 HTTPS 代理状态
+        let https_proxy_output = Command::new("networksetup")
+            .arg("-getsecurewebproxy")
+            .arg("Wi-Fi")
+            .output()
+            .expect("failed to execute process");
+
+        let https_proxy_status = String::from_utf8_lossy(&https_proxy_output.stdout);
+        let https_enabled = https_proxy_status.contains("Enabled: Yes");
+
+        (http_enabled, https_enabled)
+    }

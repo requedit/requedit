@@ -1,5 +1,5 @@
-import { Table } from "antd";
-import { useContextMenu } from 'mantine-contextmenu';
+import { Badge, Table } from "antd";
+import { useContextMenu } from "mantine-contextmenu";
 import { ColumnType } from "antd/es/table";
 
 type DataType = {
@@ -10,7 +10,14 @@ type DataType = {
   status: string;
 };
 
-export default function UrlList(props: { dataSource: DataType[], onSelect: (data: DataType) => void }) {
+const isSuccess = (res: any) => {
+  return 
+}
+
+export default function UrlList(props: {
+  dataSource: DataType[];
+  onSelect: (data: DataType) => void;
+}) {
   console.log(props.dataSource);
   const { showContextMenu } = useContextMenu();
   const columns: ColumnType<any>[] = [
@@ -26,8 +33,8 @@ export default function UrlList(props: { dataSource: DataType[], onSelect: (data
       key: "uri",
       ellipsis: true,
       render: (text, record, index) => {
-        return <span >{record.req.uri}</span>;
-      }
+        return <span>{record.req.uri}</span>;
+      },
     },
     // {
     //   title: "客户端",
@@ -41,8 +48,8 @@ export default function UrlList(props: { dataSource: DataType[], onSelect: (data
       key: "method",
       ellipsis: true,
       render: (text, record, index) => {
-        return <span >{record.req.method}</span>;
-      }
+        return <span>{record.req.method}</span>;
+      },
     },
     {
       title: "Status",
@@ -50,52 +57,61 @@ export default function UrlList(props: { dataSource: DataType[], onSelect: (data
       key: "status",
       ellipsis: true,
       render: (text, record, index) => {
-        return <span >{record.res ? record.res.status : <span className="text-gray-400">pending</span>}</span>;
-      }
+        return (
+          <span>
+            {record.res ? (
+              <Badge color={"green"} text={record.res.status} />
+            ) : (
+              <Badge color={"gray"} text="pending" />
+            )}
+          </span>
+        );
+      },
     },
 
     {
-      title: 'Time',
-      dataIndex: 'time',
-      key: 'time',
+      title: "Time",
+      dataIndex: "time",
+      key: "time",
       ellipsis: true,
     },
     {
-      title: 'Version',
-      dataIndex: 'version',
-      key: 'version',
+      title: "Version",
+      dataIndex: "version",
+      key: "version",
       ellipsis: true,
-    }
+    },
   ];
 
   return (
     <div className="overflow-y-auto">
       <Table<DataType>
-      rowKey={(record) => record.key}
-      columns={columns}
-      pagination={false}
-      dataSource={props.dataSource}
-      // scroll={{y: '300px'}}
-      onRow={(record) => {
-        return {
-          onContextMenu: showContextMenu([
-            {
-              key: 'copy',
-              // icon: <IconCopy size={16} />,
-              title: '拷贝网址',
-              onClick: () => console.log,
-            },
-            {
-              key: 'copy_curl',
-              // icon: <IconDownload size={16} />,
-              title: '拷贝 cURL',
-              onClick: () => console.log,
-            },
-          ]),
-          onClick: () => props.onSelect(record),
-        };
-      }}
-    />
+        sticky={true}
+        rowKey={(record) => record.key}
+        columns={columns}
+        pagination={false}
+        dataSource={props.dataSource}
+        // scroll={{y: '300px'}}
+        onRow={(record) => {
+          return {
+            onContextMenu: showContextMenu([
+              {
+                key: "copy",
+                // icon: <IconCopy size={16} />,
+                title: "拷贝网址",
+                onClick: () => console.log,
+              },
+              {
+                key: "copy_curl",
+                // icon: <IconDownload size={16} />,
+                title: "拷贝 cURL",
+                onClick: () => console.log,
+              },
+            ]),
+            onClick: () => props.onSelect(record),
+          };
+        }}
+      />
     </div>
   );
 }
