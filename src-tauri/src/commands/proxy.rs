@@ -1,5 +1,6 @@
 use crate::config;
-use std::process::Command;
+use regex::Regex;
+use std::process::{Command, Output};
 use tauri;
 
 #[tauri::command]
@@ -72,27 +73,77 @@ pub(crate) fn clean_sys_proxy() {
     }
 }
 
-#[tauri::command]
-    pub(crate) fn get_proxy_status() -> (bool, bool) {
-        // 检查 HTTP 代理状态
-        let http_proxy_output = Command::new("networksetup")
-            .arg("-getwebproxy")
-            .arg("Wi-Fi") // 网络接口，例如 "Wi-Fi" 或 "Ethernet"
-            .output()
-            .expect("failed to execute process");
+// #[derive(Debug, Serialize, Deserialize)]
+struct SysProxyInfo {
+    enabled: bool,
+    server: String,
+    port: u16,
+}
 
-        let http_proxy_status = String::from_utf8_lossy(&http_proxy_output.stdout);
-        let http_enabled = http_proxy_status.contains("Enabled: Yes");
+impl SysProxyInfo {
+    fn from_command(output: Output) -> Self {
+        let proxy_status = String::from_utf8_lossy(&output.stdout);
+        let enabled_regex = Regex::new(r"Enabled: (\w+)").unwrap();
+        let server_regex = Regex::new(r"Server: (\S+)").unwrap();
+        let port_regex = Regex::new(r"Port: (\d+)").unwrap();
+        // 从输出中提取并转换字段
+        let enabled = enabled_regex
+            .captures(&proxy_status)
+            .and_then(|cap| cap.get(1))
+            .map_or(false, |m| m.as_str() == "Yes");
 
-        // 检查 HTTPS 代理状态
-        let https_proxy_output = Command::new("networksetup")
-            .arg("-getsecurewebproxy")
-            .arg("Wi-Fi")
-            .output()
-            .expect("failed to execute process");
+        let server = server_regex
+            .captures(&proxy_status)
+            .and_then(|cap| cap.get(1))
+            .map_or_else(|| "Unknown".to_string(), |m| m.as_str().to_string());
 
-        let https_proxy_status = String::from_utf8_lossy(&https_proxy_output.stdout);
-        let https_enabled = https_proxy_status.contains("Enabled: Yes");
-
-        (http_enabled, https_enabled)
+        let port = port_regex
+            .captures(&proxy_status)
+            .and_then(|cap| cap.get(1))
+            .map_or_else(
+                || 0,                                       // 当未找到端口或解析失败时，返回默认值 0
+                |m| m.as_str().parse::<u16>().unwrap_or(0), // 将字符串解析为 u16，失败时返回 0
+            );
+        SysProxyInfo {
+            enabled,
+            server,
+            port,
+        }
     }
+
+    fn enabled(self) -> bool {
+        let c = config::get_global_config();
+        if !self.enabled {
+            return false;
+        }
+        if self.server != c.address {
+            return false;
+        }
+        if self.port != c.port {
+            return false;
+        }
+        true
+    }
+}
+
+#[tauri::command]
+pub(crate) fn get_proxy_status() -> bool {
+    // 检查 HTTP 代理状态
+    let http_proxy_output = Command::new("networksetup")
+        .arg("-getwebproxy")
+        .arg("Wi-Fi") // 网络接口，例如 "Wi-Fi" 或 "Ethernet"
+        .output()
+        .expect("failed to execute process");
+
+    let http_proxy_info = SysProxyInfo::from_command(http_proxy_output);
+
+    // 检查 HTTPS 代理状态
+    let https_proxy_output = Command::new("networksetup")
+        .arg("-getsecurewebproxy")
+        .arg("Wi-Fi")
+        .output()
+        .expect("failed to execute process");
+    let https_proxy_info = SysProxyInfo::from_command(https_proxy_output);
+
+    http_proxy_info.enabled() && https_proxy_info.enabled()
+}

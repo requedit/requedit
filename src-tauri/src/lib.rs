@@ -43,6 +43,7 @@ pub fn run() {
             commands::proxy::set_sys_proxy,
             commands::proxy::clean_sys_proxy,
             commands::proxy::get_proxy_status,
+            commands::config::get_config,
         ])
         .run(ctx)
         .expect("error while running tauri application");

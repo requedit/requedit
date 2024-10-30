@@ -3,8 +3,9 @@ import ReqPanel from "./req-panel";
 import ResPanel from "./res-panel";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import useHeight from "@/hooks/useHeight";
-import { Divider, Space, Tag } from "antd";
-import { parseHttpStatus } from "@/utils/parse-code";
+import { Divider, Empty, Space, Tag } from "antd";
+import { parseHttpStatus, getStatusColor } from "@/utils";
+import { MethodColor } from "@/constants/method";
 
 export default forwardRef(function Detail(
   props: {
@@ -21,21 +22,14 @@ export default forwardRef(function Detail(
 
   const { record } = props;
   if (!record) {
-    return null;
+    return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
   }
-  const getStatusColor = (res: any): string => {
-    if (!res) return "gray";
-    const statuscode = parseHttpStatus(res);
-    return String(statuscode).startsWith("4") ||
-      String(statuscode).startsWith("5")
-      ? "red"
-      : "green";
-  };
+
   return (
     <div ref={detailRef}>
       <div>
         <Space>
-          <Tag color="gray">{record.req.method}</Tag>
+          <Tag color={MethodColor[record.req.method]}>{record.req.method}</Tag>
           <Tag color={getStatusColor(record.res)}>
             {parseHttpStatus(record.res) || "pending"}
           </Tag>

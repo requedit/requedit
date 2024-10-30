@@ -5,7 +5,6 @@ import { listen } from "@tauri-apps/api/event";
 import { Request, AppContext, ThemeType } from "./AppContext";
 import { invoke } from "@tauri-apps/api/core";
 import { useMount } from "ahooks";
-import { parseHttpStatus } from "@/utils/parse-code";
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<ThemeType>("auto");

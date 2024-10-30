@@ -1,6 +1,7 @@
 import { Badge, Table } from "antd";
 import { useContextMenu } from "mantine-contextmenu";
 import { ColumnType } from "antd/es/table";
+import { getStatusColor } from "@/utils";
 
 type DataType = {
   key: number;
@@ -11,8 +12,8 @@ type DataType = {
 };
 
 const isSuccess = (res: any) => {
-  return 
-}
+  return;
+};
 
 export default function UrlList(props: {
   dataSource: DataType[];
@@ -58,13 +59,10 @@ export default function UrlList(props: {
       ellipsis: true,
       render: (text, record, index) => {
         return (
-          <span>
-            {record.res ? (
-              <Badge color={"green"} text={record.res.status} />
-            ) : (
-              <Badge color={"gray"} text="pending" />
-            )}
-          </span>
+          <Badge
+            color={getStatusColor(record.res)}
+            text={record.res ? record.res.status : "pending"}
+          />
         );
       },
     },

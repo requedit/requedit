@@ -1,5 +1,3 @@
-use std::{hash::{DefaultHasher, Hash, Hasher}, net::SocketAddr, time::SystemTime};
-
 use async_trait::async_trait;
 use hudsucker::{
     hyper::{Body, Method, Request, Response},
