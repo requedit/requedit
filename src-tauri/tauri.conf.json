@@ -24,7 +24,7 @@
   },
   "productName": "Requedit",
   "mainBinaryName": "Requedit",
-  "version": "0.2.0",
+  "version": "0.1.1",
   "identifier": "com.requedit.app",
   "app": {
     "security": {
