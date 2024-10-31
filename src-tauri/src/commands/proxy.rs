@@ -5,75 +5,103 @@ use tauri;
 
 #[tauri::command]
 pub(crate) fn set_sys_proxy() {
-    let config = config::load().unwrap();
-    let address = &config.address;
-    let port = &config.port.to_string();
-    let http_proxy_status = Command::new("networksetup")
-        .arg("-setwebproxy")
-        .arg("Wi-Fi") // 网络接口，例如 "Wi-Fi" 或 "Ethernet"
-        .arg(address) // 代理服务器地址
-        .arg(port) // 代理服务器端口
-        .status()
-        .expect("failed to execute process");
+    #[cfg(target_os = "macos")]
+    {
+        let config = config::load().unwrap();
+        let address = &config.address;
+        let port = &config.port.to_string();
+        let http_proxy_status = Command::new("networksetup")
+            .arg("-setwebproxy")
+            .arg("Wi-Fi")
+            .arg(address)
+            .arg(port)
+            .status()
+            .expect("failed to execute process");
 
-    // 检查是否成功设置 HTTP 代理
-    if http_proxy_status.success() {
-        println!("HTTP 代理已成功设置");
-    } else {
-        eprintln!("设置 HTTP 代理失败");
+
+        if http_proxy_status.success() {
+            log::info!("Macos http proxy set success");
+        } else {
+            log::warn!("Macos http proxy set fail");
+        }
+
+
+        let https_proxy_status = Command::new("networksetup")
+            .arg("-setsecurewebproxy")
+            .arg("Wi-Fi")
+            .arg(address)
+            .arg(port)
+            .status()
+            .expect("failed to execute process");
+
+
+        if https_proxy_status.success() {
+            log::info!("Macos https proxy set success");
+        } else {
+            log::warn!("Macos https proxy set fail");
+        }
     }
+    #[cfg(target_os = "windows")]
+    {
+        let proxy_address = format!("{}:{}", address, port);
+        let http_proxy_status = Command::new("netsh")
+            .args(&["winhttp", "set", "proxy", &proxy_address])
+            .status()
+            .expect("failed to execute process");
 
-    // 设置 HTTPS 代理
-    let https_proxy_status = Command::new("networksetup")
-        .arg("-setsecurewebproxy")
-        .arg("Wi-Fi")
-        .arg(address) // 代理服务器地址
-        .arg(port) // 代理服务器端口
-        .status()
-        .expect("failed to execute process");
-
-    // 检查是否成功设置 HTTPS 代理
-    if https_proxy_status.success() {
-        println!("HTTPS 代理已成功设置");
-    } else {
-        eprintln!("设置 HTTPS 代理失败");
+        if http_proxy_status.success() {
+            log::info!("Windows http proxy set success");
+        } else {
+            log::warn!("Windows http proxy set fail");
+        }
     }
 }
 
 #[tauri::command]
 pub(crate) fn clean_sys_proxy() {
-    // 关闭 HTTP 代理
-    let http_proxy_status = Command::new("networksetup")
-        .arg("-setwebproxystate")
-        .arg("Wi-Fi") // 网络接口，例如 "Wi-Fi" 或 "Ethernet"
-        .arg("off") // 关闭 HTTP 代理
-        .status()
-        .expect("failed to execute process");
+    #[cfg(target_os = "macos")]
+    {
+        let http_proxy_status = Command::new("networksetup")
+            .arg("-setwebproxystate")
+            .arg("Wi-Fi")
+            .arg("off")
+            .status()
+            .expect("failed to execute process");
 
-    // 检查是否成功关闭 HTTP 代理
-    if http_proxy_status.success() {
-        println!("HTTP 代理已成功关闭");
-    } else {
-        eprintln!("关闭 HTTP 代理失败");
+        if http_proxy_status.success() {
+            log::info!("Macos http proxy clean success")
+        } else {
+            log::warn!("Macos http proxy clean fail")
+        }
+
+        let https_proxy_status = Command::new("networksetup")
+            .arg("-setsecurewebproxystate")
+            .arg("Wi-Fi")
+            .arg("off")
+            .status()
+            .expect("failed to execute process");
+
+        if https_proxy_status.success() {
+            log::info!("Macos https proxy clean success")
+        } else {
+            log::warn!("Macos https proxy clean fail")
+        }
     }
+    #[cfg(target_os = "windows")]
+    {
+        let http_proxy_status = Command::new("netsh")
+            .args(&["winhttp", "reset", "proxy"])
+            .status()
+            .expect("failed to execute process");
 
-    // 关闭 HTTPS 代理
-    let https_proxy_status = Command::new("networksetup")
-        .arg("-setsecurewebproxystate")
-        .arg("Wi-Fi") // 网络接口
-        .arg("off") // 关闭 HTTPS 代理
-        .status()
-        .expect("failed to execute process");
-
-    // 检查是否成功关闭 HTTPS 代理
-    if https_proxy_status.success() {
-        println!("HTTPS 代理已成功关闭");
-    } else {
-        eprintln!("关闭 HTTPS 代理失败");
+        if http_proxy_status.success() {
+            log::info!("Windows http proxy clean success")
+        } else {
+            log::warn!("Windows http proxy clean fail")
+        }
     }
 }
 
-// #[derive(Debug, Serialize, Deserialize)]
 struct SysProxyInfo {
     enabled: bool,
     server: String,
@@ -86,7 +114,7 @@ impl SysProxyInfo {
         let enabled_regex = Regex::new(r"Enabled: (\w+)").unwrap();
         let server_regex = Regex::new(r"Server: (\S+)").unwrap();
         let port_regex = Regex::new(r"Port: (\d+)").unwrap();
-        // 从输出中提取并转换字段
+
         let enabled = enabled_regex
             .captures(&proxy_status)
             .and_then(|cap| cap.get(1))
@@ -100,10 +128,7 @@ impl SysProxyInfo {
         let port = port_regex
             .captures(&proxy_status)
             .and_then(|cap| cap.get(1))
-            .map_or_else(
-                || 0,                                       // 当未找到端口或解析失败时，返回默认值 0
-                |m| m.as_str().parse::<u16>().unwrap_or(0), // 将字符串解析为 u16，失败时返回 0
-            );
+            .map_or_else(|| 0, |m| m.as_str().parse::<u16>().unwrap_or(0));
         SysProxyInfo {
             enabled,
             server,
@@ -128,22 +153,35 @@ impl SysProxyInfo {
 
 #[tauri::command]
 pub(crate) fn get_proxy_status() -> bool {
-    // 检查 HTTP 代理状态
-    let http_proxy_output = Command::new("networksetup")
-        .arg("-getwebproxy")
-        .arg("Wi-Fi") // 网络接口，例如 "Wi-Fi" 或 "Ethernet"
-        .output()
-        .expect("failed to execute process");
+    #[cfg(target_os = "macos")]
+    {
+        let http_proxy_output = Command::new("networksetup")
+            .arg("-getwebproxy")
+            .arg("Wi-Fi")
+            .output()
+            .expect("failed to execute process");
 
-    let http_proxy_info = SysProxyInfo::from_command(http_proxy_output);
+        let http_proxy_info = SysProxyInfo::from_command(http_proxy_output);
 
-    // 检查 HTTPS 代理状态
-    let https_proxy_output = Command::new("networksetup")
-        .arg("-getsecurewebproxy")
-        .arg("Wi-Fi")
-        .output()
-        .expect("failed to execute process");
-    let https_proxy_info = SysProxyInfo::from_command(https_proxy_output);
+        // 检查 HTTPS 代理状态
+        let https_proxy_output = Command::new("networksetup")
+            .arg("-getsecurewebproxy")
+            .arg("Wi-Fi")
+            .output()
+            .expect("failed to execute process");
+        let https_proxy_info = SysProxyInfo::from_command(https_proxy_output);
 
-    http_proxy_info.enabled() && https_proxy_info.enabled()
+        http_proxy_info.enabled() && https_proxy_info.enabled()
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        let output = Command::new("netsh")
+            .args(&["winhttp", "show", "proxy"])
+            .output()
+            .expect("failed to execute process");
+        let proxy_status = String::from_utf8_lossy(&output.stdout);
+
+        proxy_status.contains("Proxy Server(s) are enabled")
+    }
 }

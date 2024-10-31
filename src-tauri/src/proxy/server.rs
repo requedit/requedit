@@ -1,6 +1,7 @@
 use crate::utils;
 use crate::{config, error::RequeditError, proxy::data::ProxyData, proxy::handler::ProxyHandler};
 use hudsucker::builder::ProxyBuilder;
+use log::error;
 use std::net::SocketAddr;
 use tauri::async_runtime::Sender;
 
@@ -24,13 +25,12 @@ impl ProxyServer {
         let proxy = ProxyBuilder::new()
             .with_addr(addr)
             .with_rustls_client()
-            // .with_native_tls_client()
             .with_ca(ca)
             .with_http_handler(ProxyHandler::new(self.tx.clone()))
             .build();
 
         if let Err(e) = proxy.start(shutdown_signal()).await {
-            println!("Failed to start the proxy server: {}", e);
+            error!("Failed to start the proxy server: {}", e);
         }
         Ok(())
     }
