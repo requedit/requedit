@@ -46,7 +46,10 @@ export default function ResPanel(props: { response: Record<string, any> }) {
       <Tabs
         items={tabs}
         renderTabBar={renderTabBar}
-        className="h-full overflow-auto"
+        className="overflow-auto"
+        style={{
+          height: "calc(100% - 40px)",
+        }}
       />
     </div>
   );

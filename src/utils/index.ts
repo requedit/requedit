@@ -17,3 +17,23 @@ export const getStatusColor = (res: any): string => {
     ? "red"
     : "gray";
 };
+
+export function buildCurlCommand(
+  url: string,
+  method: string = 'GET',
+  headers: { [key: string]: string } = {},
+  body: any
+): string {
+  let curlCmd = `curl -X ${method.toUpperCase()} "${url}"`;
+
+  for (const [key, value] of Object.entries(headers)) {
+      curlCmd += ` \\\n  -H '${key}: ${value}'`;
+  }
+
+  if (body && (method === 'POST' || method === 'PUT')) {
+      const data = typeof body === 'string' ? body : JSON.stringify(body);
+      curlCmd += ` \\\n  -d '${data}'`;
+  }
+
+  return curlCmd;
+}

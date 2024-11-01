@@ -1,21 +1,16 @@
+import { Category } from "@/constants/catetory";
 
 export const categories = [
-  "All",
-  "Http",
-  "Https",
-  "Websocket",
-  "Json",
-  "Form",
-  "XML",
-  "JS",
-  "CSS",
-  "GraphQL",
-  "Doc",
-  "Media",
-  "Other",
+  Category.ALL,
+  Category.XHR,
+  Category.DOC,
+  Category.CSS,
+  Category.JS,
+  Category.MEDIA,
+  Category.WEBSOCKET,
 ];
 
 export type FiltersValue = {
   search: string
-  category: typeof categories[number]
+  category: Category
 }

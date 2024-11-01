@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
 
 const ThemeSwitcher = (props: { theme: string; toggleTheme: () => void }) => {
   const { theme, toggleTheme } = props;
   const isDarkMode = theme === "dark";
 
   return (
-    <div className="flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+    <div className="flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <button
         onClick={toggleTheme}
         className={`flex items-center justify-center p-1.5 rounded-full focus:outline-none transition-all duration-300 ease-in-out ${

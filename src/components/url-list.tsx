@@ -1,26 +1,18 @@
-import { Badge, Table } from "antd";
+import { Badge, Table, message } from "antd";
 import { useContextMenu } from "mantine-contextmenu";
 import { ColumnType } from "antd/es/table";
-import { getStatusColor } from "@/utils";
+import { buildCurlCommand, getStatusColor } from "@/utils";
+import { RequestRecord } from "@/provides/AppContext";
 
-type DataType = {
-  key: number;
-  url: string;
-  method: string;
-  statusCode: number;
-  status: string;
-};
-
-const isSuccess = (res: any) => {
-  return;
-};
 
 export default function UrlList(props: {
-  dataSource: DataType[];
-  onSelect: (data: DataType) => void;
+  dataSource: RequestRecord[];
+  selectedId?: number;
+  onSelect: (data: RequestRecord) => void;
 }) {
-  console.log(props.dataSource);
+
   const { showContextMenu } = useContextMenu();
+
   const columns: ColumnType<any>[] = [
     {
       title: "ID",
@@ -37,12 +29,6 @@ export default function UrlList(props: {
         return <span>{record.req.uri}</span>;
       },
     },
-    // {
-    //   title: "客户端",
-    //   dataIndex: "client",
-    //   key: "client",
-    //   ellipsis: true,
-    // },
     {
       title: "Method",
       dataIndex: "method",
@@ -58,12 +44,7 @@ export default function UrlList(props: {
       key: "status",
       ellipsis: true,
       render: (text, record, index) => {
-        return (
-          <Badge
-            color={getStatusColor(record.res)}
-            text={record.res ? record.res.status : "pending"}
-          />
-        );
+        return <span>{record.res ? record.res.status : "pending"}</span>
       },
     },
 
@@ -80,30 +61,37 @@ export default function UrlList(props: {
       ellipsis: true,
     },
   ];
-
+  const onCopy = (record: RequestRecord) => {
+    navigator.clipboard.writeText(record.req.uri);
+    message.success("已复制");
+  }
+  const onCopyToCurl = (record: RequestRecord) => {
+    const curl = buildCurlCommand(record.req.uri, record.req.method, record.req.headers, record.req.body);
+    navigator.clipboard.writeText(curl);
+    message.success("已复制");
+  }
   return (
     <div className="overflow-y-auto">
-      <Table<DataType>
+      <Table<RequestRecord>
         sticky={true}
-        rowKey={(record) => record.key}
+        rowKey={'id'}
         columns={columns}
         pagination={false}
         dataSource={props.dataSource}
-        // scroll={{y: '300px'}}
+        rowHoverable={false}
         onRow={(record) => {
           return {
+            className: record.id == props.selectedId ? "bg-blue-600 text-white" : "",
             onContextMenu: showContextMenu([
               {
                 key: "copy",
-                // icon: <IconCopy size={16} />,
                 title: "拷贝网址",
-                onClick: () => console.log,
+                onClick: () => onCopy(record),
               },
               {
                 key: "copy_curl",
-                // icon: <IconDownload size={16} />,
                 title: "拷贝 cURL",
-                onClick: () => console.log,
+                onClick: () => onCopyToCurl(record),
               },
             ]),
             onClick: () => props.onSelect(record),
