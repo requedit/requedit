@@ -18,10 +18,10 @@ An HTTP(S) proxy tool based on Tauri and React, featuring request and response e
 
 
 ## Features
-* [x]HTTP / HTTP(s) proxy
+* [x] HTTP / HTTP(s) proxy
 * [x] Web UI
 * [x] Dark / light theme
-* [] Request/response editing
+* [ ] Request/response editing
 
 
 ## Downloads
