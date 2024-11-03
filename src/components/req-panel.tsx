@@ -1,5 +1,6 @@
 import { Tabs, TabsProps, theme } from "antd";
 import StickyBox from "react-sticky-box";
+import Body from "./panels/body";
 
 export default function ReqPanel(props: { request: Record<string, any> }) {
   const {
@@ -24,22 +25,7 @@ export default function ReqPanel(props: { request: Record<string, any> }) {
     {
       label: "Body",
       key: "body",
-      children: <pre>{JSON.stringify(props.request.body, null, 2)}</pre>,
-    },
-    {
-      label: "Cookies",
-      key: "cookies",
-      children: <pre>敬请期待</pre>,
-    },
-    {
-      label: "Authentication",
-      key: "authentication",
-      children: <pre>敬请期待</pre>,
-    },
-    {
-      label: "Raw",
-      key: "raw",
-      children: <pre>{JSON.stringify(props.request, null, 2)}</pre>,
+      children: <Body body={props.request.body} />,
     },
     {
       label: "Code",

@@ -21,6 +21,11 @@ function App() {
           lineHeight: 1.2,
           lineHeightSM: 1.4,
         },
+        components: {
+          Tree: {
+            nodeSelectedBg: "#1677ff"
+          }
+        }
       }}
     >
       <MantineProvider>

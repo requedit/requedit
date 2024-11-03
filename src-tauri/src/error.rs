@@ -7,6 +7,8 @@ pub(crate) enum RequeditError {
     Hyper(hyper::Error),
     IO(std::io::Error),
     SerdeYaml(serde_yaml::Error),
+    SerdeJson(serde_json::Error),
+    Utf8Error(std::str::Utf8Error),
     Other(String),
 }
 
@@ -32,6 +34,18 @@ impl From<serde_yaml::Error> for RequeditError {
     }
 }
 
+impl From<serde_json::Error> for RequeditError {
+    fn from(err: serde_json::Error) -> Self {
+        RequeditError::SerdeJson(err)
+    }
+}
+
+impl From<std::str::Utf8Error> for RequeditError {
+    fn from(value: std::str::Utf8Error) -> Self {
+        RequeditError::Utf8Error(value)
+    }
+}
+
 impl fmt::Display for RequeditError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -39,6 +53,8 @@ impl fmt::Display for RequeditError {
             RequeditError::Hudsucker(e) => write!(f, "Hudsucker error: {}", e),
             RequeditError::IO(e) => write!(f, "IO error: {}", e),
             RequeditError::SerdeYaml(e) => write!(f, "SerdeYaml error: {}", e),
+            RequeditError::SerdeJson(e) => write!(f, "SerdeJson error: {}", e),
+            RequeditError::Utf8Error(e) => write!(f, "Utf8 error: {}", e),
             RequeditError::Other(msg) => write!(f, "Other error: {}", msg),
         }
     }

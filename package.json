@@ -16,9 +16,11 @@
     "@mantine/hooks": "6",
     "@tauri-apps/api": "^2.0.2",
     "@tauri-apps/plugin-shell": "~2",
+    "@textea/json-viewer": "^4.0.0",
     "ahooks": "^3.8.1",
     "antd": "^5.21.0",
     "axios": "^1.7.7",
+    "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
     "mantine-contextmenu": "6",
     "react": "^18.2.0",
@@ -26,7 +28,8 @@
     "react-resizable": "^3.0.5",
     "react-router-dom": "^6.26.2",
     "react-split-pane": "^0.1.92",
-    "react-sticky-box": "^2.0.5"
+    "react-sticky-box": "^2.0.5",
+    "use-antd-resizable-header": "^3.1.0"
   },
   "devDependencies": {
     "@release-it/bumper": "^6.0.1",
@@ -38,6 +41,7 @@
     "@types/react-resizable": "^3.0.8",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.20",
+    "less": "^4.2.0",
     "postcss": "^8.4.47",
     "release-it": "^17.10.0",
     "tailwindcss": "^3.4.13",

@@ -28,6 +28,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   useMount(async () => {
     unListenFnRef.current =  await listen<any>("proxy-event", (event) => {
       console.log("Received event from Rust:", event.payload);
+      console.log(event.payload.req.date.valueOf());
       setRequests((preRequests) => {
         const reqs = [event.payload, ...preRequests]
           .filter((item) => item)

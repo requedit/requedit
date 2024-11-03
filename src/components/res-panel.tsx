@@ -1,5 +1,6 @@
 import { Tabs, TabsProps, theme } from "antd";
 import StickyBox from "react-sticky-box";
+import Body from "./panels/body";
 
 export default function ResPanel(props: { response: Record<string, any> }) {
   const {
@@ -20,11 +21,7 @@ export default function ResPanel(props: { response: Record<string, any> }) {
     {
       label: "Body",
       key: "body",
-      children: (
-        <pre className="text-wrap overflow-auto">
-          {JSON.stringify(props.response.body, null, 2)}
-        </pre>
-      ),
+      children: <Body body={props.response.body} />,
     },
     {
       label: "Row",

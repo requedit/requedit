@@ -14,12 +14,14 @@ export type RequestRecord = {
     version: string;
     protocol: string;
     method: string;
+    date: string;
     headers: Record<string, string>;
     body: string;
   },
   res?: {
     status: string;
     version: string;
+    date: string;
     headers: Record<string, string>;
     body: string;
   }

@@ -1,5 +1,6 @@
 import { useDomain, useTreeData } from "@/provides/AppContext";
 import { Tree, TreeProps } from "antd";
+import "./folder-tree.less"
 
 export default function FolderTree() {
   const tree = useTreeData();
@@ -13,7 +14,7 @@ export default function FolderTree() {
     console.log("onShowDomainContextMenu");
   }
   return (
-    <div className="p-2">
+    <div className="folder-tree h-full p-2 overflow-auto">
       <Tree
         autoExpandParent
         blockNode

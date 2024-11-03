@@ -27,7 +27,7 @@ export default function ListPage() {
           minSize={100}
           maxSize={400}
           defaultSize={280}
-          resizerClassName="w-[11px] mx-0 -mx-[5px] border-l-[5px] border-r-[5px] border-l-transparent border-r-transparent cursor-col-resize bg-gray-200 dark:bg-gray-600 z-1 box-border bg-clip-padding"
+          resizerClassName="w-[11px] mx-0 -mx-[5px] border-l-[5px] border-r-[5px] border-x-white cursor-col-resize bg-gray-200 dark:bg-gray-600 dark:border-x-[#141414] z-1 box-border bg-clip-padding"
           style={{
             position: "relative",
             height: `calc(100vh - ${height + 1}px)`,
