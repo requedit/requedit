@@ -12,6 +12,9 @@
 
 </div>
 
+## Docs
+* [中文](README_zh.md)
+* [English](README.md)
 
 ## Description
 An HTTP(S) proxy tool based on Tauri and React, featuring request and response editing (upcoming), with support for dark and light modes. The interface is clean and visually appealing.
