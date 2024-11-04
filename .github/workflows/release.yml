@@ -52,8 +52,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build Vite + Tauri
-        run: pnpm build
+      - name: Build application
+        run: pnpm tauri build
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -2,16 +2,16 @@
 name = "requedit"
 version = "0.2.0"
 description = "A proxy for editing request and response data"
-authors = [ "wstreet7 <wstreet7@outlook.com>" ]
+authors = ["wstreet7 <wstreet7@outlook.com>"]
 edition = "2021"
 
 [lib]
 name = "requedit_lib"
-crate-type = [ "staticlib", "cdylib", "rlib" ]
+crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies.tauri-build]
 version = "2"
-features = [ ]
+features = []
 
 [dependencies]
 serde_json = "1"
@@ -35,26 +35,26 @@ flate2 = "1.0.34"
 brotli = "3.3.4"
 zstd = "0.11"
 
-  [dependencies.tauri]
-  version = "2"
-  features = [ "tray-icon" ]
+[dependencies.tauri]
+version = "2"
+features = ["tray-icon"]
 
-  [dependencies.serde]
-  version = "1"
-  features = [ "derive" ]
+[dependencies.serde]
+version = "1"
+features = ["derive"]
 
-  [dependencies.tokio]
-  version = "1.38.0"
-  features = [ "full" ]
+[dependencies.tokio]
+version = "1.38.0"
+features = ["full"]
 
-  [dependencies.hyper]
-  version = "0.14.7"
-  features = [ "http1", "http2", "client" ]
+[dependencies.hyper]
+version = "0.14.7"
+features = ["http1", "http2", "client"]
 
-  [dependencies.hudsucker]
-  version = "0.20.0"
-  features = [ "http2", "rustls-client", "native-tls-client" ]
+[dependencies.hudsucker]
+version = "0.20.0"
+features = ["http2", "rustls-client", "native-tls-client"]
 
-  [dependencies.rcgen]
-  version = "0.10.0"
-  features = [ "x509-parser", "pem" ]
+[dependencies.rcgen]
+version = "0.10.0"
+features = ["x509-parser", "pem"]
