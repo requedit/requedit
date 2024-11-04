@@ -1,5 +1,7 @@
 
 
+## [0.2.1](https://github.com/requedit/requedit/compare/v0.2.0...v0.2.1) (2024-11-04)
+
 ## 0.2.0 (2024-11-03)
 
 ### ✨ Features | 新功能
