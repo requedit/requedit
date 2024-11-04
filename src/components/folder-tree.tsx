@@ -7,7 +7,6 @@ export default function FolderTree() {
   const [domains, setDomains] = useDomain();
 
   const onSelect: TreeProps['onSelect'] = (selectedKeys) => {
-    console.log(selectedKeys)
     setDomains(selectedKeys as string[])
   }
   const onShowDomainContextMenu = () => {
