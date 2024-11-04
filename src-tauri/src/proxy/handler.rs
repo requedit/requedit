@@ -1,3 +1,5 @@
+use crate::idgen::IdGenerator;
+use crate::proxy::data::ProxyData;
 use async_trait::async_trait;
 use hudsucker::{
     hyper::{Body, Method, Request, Response},
@@ -5,10 +7,6 @@ use hudsucker::{
 };
 use log::error;
 use tauri::async_runtime::Sender;
-use crate::proxy::data::ProxyData;
-use crate::idgen::IdGenerator;
-
-
 
 #[derive(Clone, Debug)]
 pub(crate) struct ProxyHandler {
@@ -18,16 +16,16 @@ pub(crate) struct ProxyHandler {
 
 impl ProxyHandler {
     pub(crate) fn new(tx: Sender<ProxyData>) -> Self {
-        Self {
-            tx,
-            req_id: 0,
-        }
+        Self { tx, req_id: 0 }
     }
-
 }
 #[async_trait]
 impl HttpHandler for ProxyHandler {
-    async fn handle_request(&mut self, _ctx: &HttpContext, req: Request<Body>) -> RequestOrResponse {
+    async fn handle_request(
+        &mut self,
+        _ctx: &HttpContext,
+        req: Request<Body>,
+    ) -> RequestOrResponse {
         if req.method() == Method::CONNECT {
             return RequestOrResponse::Request(req);
         }
@@ -38,11 +36,11 @@ impl HttpHandler for ProxyHandler {
                 data.id = self.req_id.to_string();
                 self.tx.send(data).await.unwrap();
                 RequestOrResponse::Request(req)
-            },
+            }
             Err(err) => {
                 error!("Error on handling request: {}", err);
                 RequestOrResponse::Request(Request::default())
-            },
+            }
         };
     }
 
@@ -53,12 +51,11 @@ impl HttpHandler for ProxyHandler {
 
                 self.tx.send(data).await.unwrap();
                 res
-            },
+            }
             Err(err) => {
                 error!("Error on handling response: {}", err);
                 Response::default()
-            },
+            }
         };
-
     }
 }

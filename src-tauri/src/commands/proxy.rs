@@ -18,13 +18,11 @@ pub(crate) fn set_sys_proxy() {
             .status()
             .expect("failed to execute process");
 
-
         if http_proxy_status.success() {
             log::info!("Macos http proxy set success");
         } else {
             log::warn!("Macos http proxy set fail");
         }
-
 
         let https_proxy_status = Command::new("networksetup")
             .arg("-setsecurewebproxy")
@@ -33,7 +31,6 @@ pub(crate) fn set_sys_proxy() {
             .arg(port)
             .status()
             .expect("failed to execute process");
-
 
         if https_proxy_status.success() {
             log::info!("Macos https proxy set success");

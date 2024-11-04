@@ -2,8 +2,7 @@ use std::collections::HashMap;
 
 use crate::{error::RequeditError, proxy::data::ProxyData};
 
-
-pub(crate) struct  ProxyDataStore {
+pub(crate) struct ProxyDataStore {
     store: HashMap<String, ProxyData>,
 }
 

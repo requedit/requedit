@@ -1,6 +1,5 @@
 use std::fmt;
 
-
 #[derive(Debug)]
 pub(crate) enum RequeditError {
     Hudsucker(hudsucker::Error),

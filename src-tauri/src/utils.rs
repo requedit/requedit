@@ -1,12 +1,12 @@
 // https://github.com/sinKettu/cruster/blob/master/src/utils.rs
 
-use std::{fs, io::Read, path::Path};
 use hudsucker::certificate_authority::RcgenAuthority;
 use hudsucker::rustls::{Certificate, PrivateKey};
 use rcgen::{
     BasicConstraints, Certificate as RCgenCertificate, CertificateParams, IsCa,
     PKCS_ECDSA_P256_SHA256,
 };
+use std::{fs, io::Read, path::Path};
 
 use time::macros::datetime;
 use time::OffsetDateTime;

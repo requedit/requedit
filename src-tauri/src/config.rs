@@ -1,8 +1,8 @@
-use std::{fs, path, sync::Mutex};
+use once_cell::sync::Lazy;
+use serde::{Deserialize, Serialize};
 use serde_yaml;
 use shellexpand::tilde;
-use serde::{Serialize, Deserialize};
-use once_cell::sync::Lazy;
+use std::{fs, path, sync::Mutex};
 
 use crate::error::RequeditError;
 
@@ -25,7 +25,7 @@ pub(crate) fn load() -> Result<Config, RequeditError> {
         let file = fs::File::open(config_path)?;
         let config_from_file: Config = serde_yaml::from_reader(file)?;
         config_from_file
-    } else  {
+    } else {
         let default_config = Config::default();
         let file = fs::File::create(&config_name)?;
         let yaml_config = serde_yaml::to_value(&default_config)?;
@@ -53,5 +53,3 @@ impl Default for Config {
         }
     }
 }
-
-

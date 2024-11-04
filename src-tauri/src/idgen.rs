@@ -7,16 +7,12 @@ pub(crate) struct IdGenerator {
 }
 
 impl IdGenerator {
-
     pub(crate) fn new() -> Self {
-
         let id = GLOBAL_COUNTER.fetch_add(1, Ordering::Relaxed);
         IdGenerator { id }
     }
 
-   
     pub(crate) fn get_id(&self) -> usize {
         self.id
     }
 }
-
