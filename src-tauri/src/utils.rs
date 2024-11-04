@@ -3,8 +3,7 @@
 use hudsucker::certificate_authority::RcgenAuthority;
 use hudsucker::rustls::{Certificate, PrivateKey};
 use rcgen::{
-    BasicConstraints, Certificate as RCgenCertificate, CertificateParams, IsCa,
-    PKCS_ECDSA_P256_SHA256,
+    BasicConstraints, Certificate as RCgenCertificate, CertificateParams, DistinguishedName, IsCa, PKCS_ECDSA_P256_SHA256
 };
 use std::{fs, io::Read, path::Path};
 
@@ -25,7 +24,8 @@ pub(crate) fn generate_key_and_cer(key_path: &str, cer_path: &str) {
     cert_params.not_after = OffsetDateTime::from(datetime!(5000-01-01 0:00 UTC));
     cert_params.key_pair = None;
     cert_params.alg = &PKCS_ECDSA_P256_SHA256;
-
+    cert_params.distinguished_name = DistinguishedName::new();
+    cert_params.distinguished_name.push(rcgen::DnType::CommonName, "Requedit ca");
     let new_cert = RCgenCertificate::from_params(cert_params).unwrap();
     fs::write(cer_path, new_cert.serialize_pem().unwrap()).unwrap();
     fs::write(key_path, new_cert.serialize_private_key_pem()).unwrap();

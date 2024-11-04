@@ -31,7 +31,7 @@ Requedit 是一个基于 Tauri 和 React 的 HTTP(S) 代理工具，支持请求
 1. 从 [Releases](https://github.com/requedit/requedit/releases) 页面下载最新版本。
 2. 安装 Requedit 应用程序。
 3. 运行应用程序。
-4. 安装位于 `~/.requedit/requedit.cer` 的证书。
+4. 安装位于 `~/.requedit/requedit.cer` 的证书，并且信任。
 5. 点击启动按钮以开始代理。
 6. 应用程序将在用户界面中显示请求和响应的详细信息。
 

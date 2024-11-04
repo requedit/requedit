@@ -35,7 +35,7 @@ An HTTP(S) proxy tool based on Tauri and React, featuring request and response e
 1. Download the latest release from the [Releases](https://github.com/requedit/requedit/releases) page.
 2. Install Requedit application.
 3. Run the application.
-4. Install the certificate located at ~/.requedit/requedit.cer.
+4. Install and trust the certificate located at ~/.requedit/requedit.cer.
 4. Click the start button to start the proxy.
 5. The application will display the request and response details in the UI.
 
