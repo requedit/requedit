@@ -1,4 +1,5 @@
 {
+  "$schema": "https://unpkg.com/release-it@17/schema/release-it.json",
   "git": {
     "tagName": "v${version}",
     "requireCleanWorkingDir": false,
@@ -6,10 +7,8 @@
     "tagAnnotation": "Release ${version}",
     "push": true
   },
-  "interactive": true,
   "github": {
-    "release": true,
-    "releaseName": "v${version}"
+    "release": false
   },
   "npm": false,
   "plugins": {

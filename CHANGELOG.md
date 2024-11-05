@@ -1,5 +1,12 @@
 
 
+## [0.3.0](https://github.com/requedit/requedit/compare/v0.2.1...v0.3.0) (2024-11-05)
+
+### ✨ Features | 新功能
+
+* 🎸 add tray menu and emit ProxyStatus event to ui ([5c19873](https://github.com/requedit/requedit/commit/5c1987354248b7d008114d430050754d9ca8d262))
+* 🎸 cert file add name ([943bc0f](https://github.com/requedit/requedit/commit/943bc0f143459326d8a8a1c298f7b986a3c63346))
+
 ## [0.2.1](https://github.com/requedit/requedit/compare/v0.2.0...v0.2.1) (2024-11-04)
 
 ## 0.2.0 (2024-11-03)
