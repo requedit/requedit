@@ -25,10 +25,6 @@
     "security": {
       "csp": null
     },
-    "trayIcon": {
-      "iconPath": "icons/icon.png",
-      "iconAsTemplate": true
-    },
     "windows": [
       {
         "title": "Requedit",

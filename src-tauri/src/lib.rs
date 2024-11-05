@@ -1,14 +1,16 @@
+use commands::proxy::clean_sys_proxy;
 use proxy::{data::ProxyData, server, store};
 use std::net::{IpAddr, SocketAddr};
-use tauri::{async_runtime, Emitter};
+use tauri::{async_runtime, Emitter, Manager};
 use tauri_plugin_log::{Target, TargetKind};
 
 mod commands;
 mod config;
 mod error;
+mod event;
 mod idgen;
-mod menus;
 mod proxy;
+mod tray;
 mod utils;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -16,6 +18,16 @@ pub fn run() {
     let mut ctx = tauri::generate_context!();
 
     tauri::Builder::default()
+        .on_window_event(|window, event| match event {
+            // before closing the app, clean the system proxy
+            tauri::WindowEvent::CloseRequested { api, .. } => {
+                api.prevent_close();
+                let app = window.app_handle();
+                clean_sys_proxy(app.clone());
+                let _ = window.close();
+            }
+            _ => {}
+        })
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_theme::init(ctx.config_mut()))
         .plugin(
@@ -31,13 +43,21 @@ pub fn run() {
         .setup(|app| {
             let app_handle = app.handle();
             let app_handle = app_handle.clone();
+            // create tray
+            tray::create(&app_handle);
+
+            // create proxy data channel
             let (tx, mut rx) = async_runtime::channel::<ProxyData>(100);
+
+            // receive proxy data from channel
             async_runtime::spawn(async move {
                 let mut store = store::ProxyDataStore::new();
                 while let Some(proxy_data) = rx.recv().await {
                     match store.insert_or_update(proxy_data) {
                         Ok(data) => {
-                            if let Err(e) = app_handle.emit("proxy-event", data) {
+                            if let Err(e) =
+                                app_handle.emit(&event::Event::ProxyEvent.to_string(), data)
+                            {
                                 log::error!("Failed to emit proxy-event: {e}");
                             }
                         }

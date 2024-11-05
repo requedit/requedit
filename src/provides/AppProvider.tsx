@@ -5,6 +5,7 @@ import { listen } from "@tauri-apps/api/event";
 import { RequestRecord, AppContext, ThemeType } from "./AppContext";
 import { invoke } from "@tauri-apps/api/core";
 import { useMount, useUnmount } from "ahooks";
+import { RequeditEvent } from "@/constants/event";
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<ThemeType>("auto");
@@ -26,7 +27,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   useMount(async () => {
-    unListenFnRef.current =  await listen<any>("proxy-event", (event) => {
+    unListenFnRef.current =  await listen<any>(RequeditEvent.ProxyEvent, (event) => {
       console.log("Received event from Rust:", event.payload);
       console.log(event.payload.req.date.valueOf());
       setRequests((preRequests) => {

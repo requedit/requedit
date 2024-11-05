@@ -1,10 +1,11 @@
-use crate::config;
+use crate::{config, event};
 use regex::Regex;
 use std::process::{Command, Output};
-use tauri;
+use tauri::{self, AppHandle, Emitter};
+
 
 #[tauri::command]
-pub(crate) fn set_sys_proxy() {
+pub(crate) fn set_sys_proxy(app: AppHandle) {
     #[cfg(target_os = "macos")]
     {
         let config = config::load().unwrap();
@@ -52,10 +53,12 @@ pub(crate) fn set_sys_proxy() {
             log::warn!("Windows http proxy set fail");
         }
     }
+    let status = get_proxy_status();
+    let _ = app.emit(&event::Event::ProxyStatus.to_string(), status);
 }
 
 #[tauri::command]
-pub(crate) fn clean_sys_proxy() {
+pub(crate) fn clean_sys_proxy(app: AppHandle) {
     #[cfg(target_os = "macos")]
     {
         let http_proxy_status = Command::new("networksetup")
@@ -97,6 +100,8 @@ pub(crate) fn clean_sys_proxy() {
             log::warn!("Windows http proxy clean fail")
         }
     }
+    let status = get_proxy_status();
+    let _ = app.emit(&event::Event::ProxyStatus.to_string(), status);
 }
 
 struct SysProxyInfo {

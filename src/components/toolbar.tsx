@@ -6,9 +6,11 @@ import {
 } from "@ant-design/icons";
 import { invoke } from "@tauri-apps/api/core";
 import { Button, Divider, Flex, Space, Typography } from "antd";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ThemeSwitcher from "./theme-switch";
-import { useMount } from "ahooks";
+import { useMount, useUnmount } from "ahooks";
+import { listen } from "@tauri-apps/api/event";
+import { RequeditEvent } from "@/constants/event";
 
 type ProxyConfig = {
   address: string;
@@ -20,6 +22,7 @@ export default function Toolbar() {
   const toggleTheme = useToggleTheme();
   const [start, setStart] = useState(false);
   const [config, setConfig] = useState<ProxyConfig>();
+  const unListenFnRef = useRef<() => void>();
   const clearFn = useClearFn();
   const onStartProxy = async () => {
     await invoke(!start ? "set_sys_proxy" : "clean_sys_proxy");
@@ -31,6 +34,17 @@ export default function Toolbar() {
     const config = await invoke<ProxyConfig>("get_config");
     setConfig(config);
   });
+
+  useMount(async () => {
+    unListenFnRef.current =  await listen<any>(RequeditEvent.ProxyStatus, (event) => {
+      console.log("Received status from Rust:", event.payload);
+      setStart(event.payload);
+    });
+  });
+
+  useUnmount(() => {
+    unListenFnRef.current?.();
+  })
 
   const getStatus = async () => {
     const status = await invoke<boolean>("get_proxy_status");
