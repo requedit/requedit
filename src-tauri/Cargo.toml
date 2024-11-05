@@ -1,6 +1,6 @@
 [package]
 name = "requedit"
-version = "0.3.0"
+version = "0.1.0"
 description = "A proxy for editing request and response data"
 authors = [ "wstreet7 <wstreet7@outlook.com>" ]
 edition = "2021"

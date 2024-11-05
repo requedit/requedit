@@ -16,11 +16,7 @@
       "in": "package.json",
       "out": [
         "package.json",
-        "src-tauri/tauri.conf.json",
-        {
-          "file": "src-tauri/Cargo.toml",
-          "path": "package.version"
-        }
+        "src-tauri/tauri.conf.json"
       ]
     },
     "@release-it/conventional-changelog": {
