@@ -54,13 +54,28 @@ jobs:
 
       - name: Build application
         run: pnpm tauri build
+
+      - name: Extract Changelog for Tag
+        id: changelog
+        run: |
+          TAG=${GITHUB_REF##*/}
+
+          CHANGELOG_CONTENT=$(awk "/## \\[$TAG\\]/{f=1} f; /^## \\[/ && !/\\[$TAG\\]/ {f=0}" CHANGELOG.md)
+
+          if [ -z "$CHANGELOG_CONTENT" ]; then
+            CHANGELOG_CONTENT="No changelog found for $TAG"
+          fi
+
+          echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
+          echo "$CHANGELOG_CONTENT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-          releaseName: 'App v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
-          prerelease: false
+          tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          releaseName: 'v__VERSION__'
+          releaseBody: ${{ env.CHANGELOG_CONTENT }}
+          releaseDraft: false
+          prerelease: true
           args: ${{ matrix.args }}
