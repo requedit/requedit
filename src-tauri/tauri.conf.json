@@ -19,7 +19,7 @@
   },
   "productName": "Requedit",
   "mainBinaryName": "Requedit",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "identifier": "com.requedit.proxy",
   "app": {
     "security": {

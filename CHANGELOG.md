@@ -1,5 +1,15 @@
 
 
+## [0.4.0](https://github.com/requedit/requedit/compare/v0.3.2...v0.4.0) (2024-11-06)
+
+### ✨ Features | 新功能
+
+* 🎸 change ui style ([12caee0](https://github.com/requedit/requedit/commit/12caee0964ca1c4ae178d2fac8841bc9086d9538))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 🐛 CloseRequested event loop emit ([4a21aaa](https://github.com/requedit/requedit/commit/4a21aaa2a1869aca8bd2234ea8cc304518351b91))
+
 ## [0.3.2](https://github.com/requedit/requedit/compare/v0.3.1...v0.3.2) (2024-11-05)
 
 ## [0.3.1](https://github.com/requedit/requedit/compare/v0.3.0...v0.3.1) (2024-11-05)
