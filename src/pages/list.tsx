@@ -32,6 +32,9 @@ export default function ListPage() {
             position: "relative",
             height: `calc(100vh - ${height + 1}px)`,
           }}
+          pane2Style={{
+            margin: '0 -5px'
+          }}
         >
           <FolderTree />
           <MainPanel dataSource={requests} />

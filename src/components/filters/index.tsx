@@ -3,13 +3,10 @@ import { useState } from "react";
 import { FilterOutlined } from "@ant-design/icons";
 import { FiltersValue, categories } from "./types";
 
-
-
 export default function Filters(props: {
-  value: FiltersValue,
-  onChange: (value: FiltersValue) => void
+  value: FiltersValue;
+  onChange: (value: FiltersValue) => void;
 }) {
-
   const [selected, setSelected] = useState<string>(props.value.category);
   return (
     <Flex gap={4} wrap align="center">
@@ -19,11 +16,11 @@ export default function Filters(props: {
         prefix={<FilterOutlined />}
         style={{ width: 200 }}
         value={props.value.search}
-        onChange={e => {
+        onChange={(e) => {
           props.onChange({
             ...props.value,
-            search: e.target.value
-          })
+            search: e.target.value,
+          });
         }}
       />
       <Divider type="vertical" />
@@ -33,11 +30,11 @@ export default function Filters(props: {
             key={tag}
             checked={tag == selected}
             onChange={() => {
-              setSelected(tag)
+              setSelected(tag);
               props.onChange({
                 ...props.value,
-                category: tag
-              })
+                category: tag,
+              });
             }}
           >
             {tag}

@@ -17,6 +17,9 @@ export default function MainPanel(props: any) {
       defaultSize={280}
       className="z-50"
       resizerClassName="h-[11px] my-0 -my-[5px] border-t-[5px] border-b-[5px] border-t-transparent border-b-transparent cursor-row-resize bg-gray-200 dark:bg-gray-600 z-1 box-border bg-clip-padding"
+      pane1Style={{
+        margin: '-5px 0'
+      }}
     >
       <UrlList {...props} selectedId={record?.id} onSelect={setRecord} />
       <Detail ref={ref} record={record} />
