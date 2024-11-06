@@ -24,7 +24,7 @@ pub fn run() {
                 api.prevent_close();
                 let app = window.app_handle();
                 clean_sys_proxy(app.clone());
-                let _ = window.close();
+                app.exit(0);
             }
             _ => {}
         })

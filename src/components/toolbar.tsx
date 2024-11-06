@@ -61,7 +61,7 @@ export default function Toolbar() {
     <div>
       <Flex justify="space-between">
         <Space style={{ gap: 0 }}>
-          <Tooltip placement="top" title={start ? "Start proxy" : "Stop proxy"}>
+          <Tooltip title={start ? "Stop proxy" : "Start proxy"}>
             <Button onClick={onStartProxy} type="text">
               {start ? (
                 <PauseOutlined style={{ fontSize: 14 }} />
@@ -71,7 +71,7 @@ export default function Toolbar() {
             </Button>
           </Tooltip>
 
-          <Tooltip placement="top" title="Clear data">
+          <Tooltip title="Clear data">
             <Button type="text" onClick={clearFn}>
               <DeleteOutlined style={{ fontSize: 14 }} />
             </Button>
