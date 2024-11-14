@@ -3,7 +3,6 @@ use regex::Regex;
 use std::process::{Command, Output};
 use tauri::{self, AppHandle, Emitter};
 
-
 #[tauri::command]
 pub(crate) fn set_sys_proxy(app: AppHandle) {
     #[cfg(target_os = "macos")]

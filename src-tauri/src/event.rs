@@ -1,6 +1,6 @@
 pub(crate) enum Event {
     ProxyStatus,
-    ProxyEvent
+    ProxyEvent,
 }
 
 impl Event {
@@ -10,5 +10,4 @@ impl Event {
             Event::ProxyEvent => String::from("ProxyEvent"),
         }
     }
-
 }
