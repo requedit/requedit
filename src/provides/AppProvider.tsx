@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import type { TreeDataNode } from "antd";
-import _ from "lodash";
+import { get, orderBy, set, unionBy } from "lodash";
 import { listen } from "@tauri-apps/api/event";
 import { RequestRecord, AppContext, ThemeType } from "./AppContext";
 import { invoke } from "@tauri-apps/api/core";
@@ -37,7 +37,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             ...item,
             key: index,
           }));
-        return _.unionBy(reqs, "id");
+        return orderBy(unionBy(reqs, "id"), item => Number(item.id), 'desc');
       });
       const newTree = updateTreeData(event.payload, treeData);
       setTreeData(newTree);
@@ -82,7 +82,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 function updateTreeData(request: RequestRecord, treeData: TreeDataNode[]) {
-  const domains = _.get(treeData, "[0].children");
+  const domains = get(treeData, "[0].children");
   if (
     request.req.host &&
     !domains!.find((child) => child.title == request.req.host)
@@ -93,6 +93,6 @@ function updateTreeData(request: RequestRecord, treeData: TreeDataNode[]) {
       isLeaf: true,
     });
   }
-  _.set(treeData, "[0].children", domains);
+  set(treeData, "[0].children", domains);
   return [...treeData];
 }

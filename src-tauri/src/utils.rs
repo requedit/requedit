@@ -13,7 +13,16 @@ use time::OffsetDateTime;
 
 use crate::error::RequeditError;
 
-pub(crate) fn generate_key_and_cer(key_path: &str, cer_path: &str) {
+pub(crate) fn gen_or_get_ca(key_path: &str, cer_path: &str) -> Result<RcgenAuthority, RequeditError> {
+    if Path::new(key_path).exists() && Path::new(cer_path).exists() {
+        return get_ca(key_path, cer_path);
+    }
+
+    generate_key_and_cer(key_path, cer_path);
+    get_ca(key_path, cer_path)
+}
+
+fn generate_key_and_cer(key_path: &str, cer_path: &str) {
     if Path::new(key_path).exists() && Path::new(cer_path).exists() {
         return;
     }
@@ -34,7 +43,7 @@ pub(crate) fn generate_key_and_cer(key_path: &str, cer_path: &str) {
     fs::write(key_path, new_cert.serialize_private_key_pem()).unwrap();
 }
 
-pub(crate) fn get_ca(key_path: &str, cer_path: &str) -> Result<RcgenAuthority, RequeditError> {
+fn get_ca(key_path: &str, cer_path: &str) -> Result<RcgenAuthority, RequeditError> {
     let mut key_buffer: Vec<u8> = Vec::new();
     let f = fs::File::open(key_path);
     match f {

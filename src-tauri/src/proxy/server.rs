@@ -18,8 +18,7 @@ impl ProxyServer {
     pub(crate) async fn start(self) -> Result<(), RequeditError> {
         let addr = self.addr;
         let c = config::get_global_config();
-        utils::generate_key_and_cer(&c.key_name, &c.cer_name);
-        let ca = utils::get_ca(&c.key_name, &c.cer_name)?;
+        let ca = utils::gen_or_get_ca(&c.key_name, &c.cer_name)?;
 
         // 使用 ProxyBuilder 创建代理服务器
         let proxy = ProxyBuilder::new()
